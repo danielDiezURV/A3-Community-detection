@@ -1,7 +1,9 @@
+from collections import defaultdict
 import itertools
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
+import matplotlib.cm as cm
 import sklearn.metrics.cluster as sk_metrics
 
 class CommunityDetectionFunctions:
@@ -69,23 +71,22 @@ class CommunityDetectionFunctions:
         self.kamada_kawai_pos = nx.kamada_kawai_layout(graph)
 
     def plot_kamada_kawai_communities(self, graph, communities, method, file):
+        cmap = cm.get_cmap('Spectral')
+        colors = [cmap(i) for i in np.linspace(0, 1, len(communities))]
         plt.figure(figsize=(10, 10))
         plt.title("{method} - {file}" .format(method=method, file=file))
-        for community, color in zip(communities, ['b', 'g', 'r', 'y', 'm']):
+        for community, color in zip(communities, colors):
             nx.draw_networkx_nodes(graph, self.kamada_kawai_pos, nodelist=community, node_color=color)
         nx.draw_networkx_edges(graph, self.kamada_kawai_pos, alpha=0.5)
         plt.show()
 
-    
-    def set_fruchterman_reingold_layout(self, graph):
-        self.fruchterman_reingold_pos = nx.fruchterman_reingold_layout(graph)
+    def read_communities_file(self, filename):
+        groups = defaultdict(list)
+        with open(filename, 'r') as file:
+            for line in file:
+                node, group = line.strip().split()
+                groups[group].append(node)
 
-    def plot_fruchterman_reingold_communities(self, graph, communities, method, file):
-        plt.figure(figsize=(10, 10))
-        plt.title("{method} - {file}" .format(method=method, file=file))
-        for community, color in zip(communities, ['b', 'g', 'r', 'y', 'm']):
-            nx.draw_networkx_nodes(graph, self.fruchterman_reingold_pos, nodelist=community, node_color=color)
-        nx.draw_networkx_edges(graph, self.fruchterman_reingold_pos, alpha=0.5)
-        plt.show()
+        return groups
 
 
