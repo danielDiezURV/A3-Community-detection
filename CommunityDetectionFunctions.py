@@ -29,7 +29,6 @@ class CommunityDetectionFunctions:
             elif exist_i or exist_j:
                 dissagreements += 1
         return agreements / (agreements + dissagreements)
-
     
     def compute_normalized_mutual_information(self, communities1, communities2):
         c1_labels = [i for i, community in enumerate(communities1) for node in community]
@@ -43,7 +42,7 @@ class CommunityDetectionFunctions:
         entropy_c1 = self.calculate_entropy(c1_labels)
         entropy_c2 = self.calculate_entropy(c2_labels)
         nmi = sk_metrics.normalized_mutual_info_score(c1_labels, c2_labels)
-        vi = vi = (1.0 - nmi) * (entropy_c1 + entropy_c2)
+        vi = (1.0 - nmi) * (entropy_c1 + entropy_c2)
         return vi / np.log2(len(c1_labels))
 
 
@@ -86,7 +85,6 @@ class CommunityDetectionFunctions:
             for line in file:
                 node, group = line.strip().split()
                 groups[group].append(node)
-
         return groups
 
 
